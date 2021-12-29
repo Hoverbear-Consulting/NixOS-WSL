@@ -40,4 +40,11 @@ if [[ $# -gt 0 ]]; then
 else
     cmd="$userShell"
 fi
-exec $sw/nsenter -t $(< /run/systemd.pid) -p -m -- $sw/machinectl -q --uid=@defaultUser@ shell .host /bin/sh -c "cd \"$PWD\"; exec $cmd"
+exec $sw/nsenter -t $(< /run/systemd.pid) -p -m -- $sw/machinectl -q --uid=@defaultUser@ shell \
+    -E DISPLAY=${DISPLAY} \
+    -E PULSE_SERVER=${PULSE_SERVER} \
+    -E WSLENV=${WSLENV} \
+    -E WAYLAND_DISPLAY=${WAYLAND_DISPLAY} \
+    -E WSL_INTEROP=${WSL_INTEROP} \
+    -E WSL_DISTRO_NAME=${WSL_DISTRO_NAME} \
+    .host /bin/sh -c "cd \"$PWD\"; exec $cmd"
